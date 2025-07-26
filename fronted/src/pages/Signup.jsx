@@ -1,85 +1,84 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../App.css'; // make sure this is still imported
+import '../App.css';  // or just remove the line if App.css is already imported globally
+
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.username.trim()) newErrors.username = 'Username is required';
+    if (!formData.email.includes('@')) newErrors.email = 'Valid email is required';
+    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData); // Here you’ll call your backend API
+    if (validate()) {
+      alert('Signed Up Successfully!');
+      // Logic for signup submission here
+    }
   };
 
   return (
     <div className="signup-container">
-      <div className="signup-box">
-        <h2 className="signup-title">Create Account</h2>
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <InputField
-            label="Username"
-            name="username"
+      <h2>Sign Up</h2>
+      <form onSubmit={handleSubmit} className="signup-form">
+        <div className="input-wrapper">
+          <i className="bi bi-person"></i>
+          <input
             type="text"
+            placeholder="User Name"
             value={formData.username}
-            onChange={handleChange}
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
           />
-          <InputField
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <InputField
-            label="Password"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <Button text="Sign Up" type="submit" />
-        </form>
-        <div className="signup-footer">
-          Already have an account? <Link to="/login">Log in</Link>
         </div>
-      </div>
-    </div>
-  );
-};
+        {errors.username && <div className="error-text">{errors.username}</div>}
 
-// --- Embedded InputField Component ---
-const InputField = ({ label, name, type, value, onChange }) => {
-  return (
-    <div className="input-group">
-      <label className="input-label">{label}</label>
-      <input
-        className="input-box"
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        required
-      />
-    </div>
-  );
-};
+        <div className="input-wrapper">
+          <i className="bi bi-envelope"></i>
+          <input
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
+        </div>
+        {errors.email && <div className="error-text">{errors.email}</div>}
 
-// --- Embedded Button Component ---
-const Button = ({ text, type }) => {
-  return (
-    <button type={type} className="button-primary">
-      {text}
-    </button>
+        <div className="input-wrapper">
+          <i className="bi bi-lock"></i>
+          <input
+            type="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
+        </div>
+        {errors.password && <div className="error-text">{errors.password}</div>}
+
+        <button type="submit" className="btn btn-primary">Sign UP</button>
+
+        <div className="or-divider">Or</div>
+
+<button className="google-btn">
+ <img
+  src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+  alt="Google"
+  style={{ width: '20px', height: '20px', marginRight: '10px' }}
+/>
+  Continue with Google
+</button>
+
+
+        <div className="footer-text">
+          Already have an account? <strong>Log In</strong>
+        </div>
+      </form>
+    </div>
   );
 };
 
