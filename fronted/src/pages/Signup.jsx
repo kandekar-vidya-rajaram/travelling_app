@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import InputField from '../components/InputField';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
-import './Signup.css'; // Import the CSS file
+
 
 const Signup = () => {
   const [formData, setFormData] = useState({
